@@ -3,18 +3,19 @@ import axios from "axios";
 
 export default async function WatchMovie({ params }) {
   const { id } = params;
-  const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
+
+  // MUST NOT be NEXT_PUBLIC_
+  const API_KEY = process.env.TMDB_API_KEY;
 
   const response = await fetch(
     `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&append_to_response=external_ids`,
-    { next: { revalidate: 60 } }
+    { cache: "no-store" }
   );
 
+  if (!response.ok) throw new Error("Movie not found");
+
   const movie = await response.json();
-
   const imdbId = movie.external_ids?.imdb_id;
-
-  const embedUrl = `https://vidsrc.icu/embed/movie/${imdbId}`;
 
   return (
     <div className="flex flex-col items-center p-4">
@@ -24,8 +25,7 @@ export default async function WatchMovie({ params }) {
         <iframe
           className="w-full h-[500px] border-none rounded-lg"
           allowFullScreen
-          scrolling="no"
-          src={embedUrl}
+          src={`https://vidsrc.icu/embed/movie/${imdbId}`}
         />
       </div>
     </div>
