@@ -61,12 +61,11 @@ export default function Home() {
         </button>
       </form>
 
-      {/* Movies Grid */}
+            {/* Movies Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {movies.map((movie) => (
           <div key={movie.id} className="border rounded-lg overflow-hidden">
 
-            {/* Button Above Image */}
             <button
               onClick={() => goToMovie(movie.id)}
               className="w-full bg-blue-500 text-white py-2 hover:bg-blue-600"
@@ -74,7 +73,6 @@ export default function Home() {
               View Details
             </button>
 
-            {/* Movie Poster */}
             <img
               onClick={() => goToMovie(movie.id)}
               src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
@@ -89,3 +87,5 @@ export default function Home() {
     </div>
   );
 }
+
+      
