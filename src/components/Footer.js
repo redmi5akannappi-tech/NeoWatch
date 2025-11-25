@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="text-center mb-6">
           <h2 className="text-xl font-semibold">Looking for more movies?</h2>
           <p className="text-gray-400 mt-1">
-            Use the search bar above to discover thousands of films from TMDB!
+            Use the search bar above to discover thousands of films from NeoWatch!
           </p>
         </div>
 
@@ -18,7 +18,7 @@ export default function Footer() {
         <div className="flex flex-col items-center gap-3">
 
           <p className="text-sm text-gray-500">
-            Powered by <span className="text-blue-400 font-semibold">TMDB</span>
+            Powered by <span className="text-blue-400 font-semibold">NeoWatch</span>
           </p>
 
           {/* Social Icons */}
