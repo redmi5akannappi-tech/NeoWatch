@@ -38,7 +38,7 @@ export default function Home() {
     <div className="p-4">
       <h1 className="text-2xl font-bold text-center p-2">Movie Search</h1>
 
-      {/* 🔍 Search Bar */}
+      {/* Search Bar */}
       <form onSubmit={searchMovies} className="flex justify-center mb-4">
         <input
           type="text"
@@ -55,18 +55,28 @@ export default function Home() {
       {/* Movies Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {movies.map((movie) => (
-          <Link key={movie.id} href={`/movie/${movie.id}`} className="block">
-            <div className="border rounded-lg">
+          <div key={movie.id} className="border rounded-lg overflow-hidden">
+
+            {/* Button Above Image */}
+            <Link href={`/movie/${movie.id}`}>
+              <button className="w-full bg-blue-500 text-white py-2 hover:bg-blue-600">
+                View Details
+              </button>
+            </Link>
+
+            {/* Movie Poster */}
+            <Link href={`/movie/${movie.id}`}>
               <img
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
-                className="w-full"
+                className="w-full cursor-pointer"
               />
-              <p className="p-2 text-center">{movie.title}</p>
-            </div>
-          </Link>
+            </Link>
+
+            <p className="p-2 text-center">{movie.title}</p>
+          </div>
         ))}
       </div>
     </div>
   );
-}
+        }
