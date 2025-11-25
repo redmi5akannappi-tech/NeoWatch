@@ -1,22 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import axios from "axios";
-import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "../../../components/LoadingSpinner";
 
 export default function MovieDetail({ params }) {
-  const router = useRouter();
   const { id } = params;
+  const router = useRouter();
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [navigating, setNavigating] = useState(false);
 
-  // Fetch movie details client-side
+  // React transition state (replaces navigating)
+  const [isPending, startTransition] = useTransition();
+
+  // Fetch movie details
   useEffect(() => {
     axios
       .get(`https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`)
@@ -24,18 +25,19 @@ export default function MovieDetail({ params }) {
       .finally(() => setLoading(false));
   }, [id]);
 
-  // Show full-screen loader during navigation
+  // Transition handler
   const goToWatch = () => {
-    setNavigating(true);
-    router.push(`/watch/${id}`);
+    startTransition(() => {
+      router.push(`/watch/${id}`);
+    });
   };
 
-  // Show loading while fetching movie
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="p-4 max-w-2xl mx-auto">
-      {navigating && <LoadingSpinner />}
+      {/* Smooth transition spinner */}
+      {isPending && <LoadingSpinner />}
 
       <h1 className="text-2xl font-bold text-center">{movie.title}</h1>
 
