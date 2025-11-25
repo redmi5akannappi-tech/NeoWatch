@@ -14,7 +14,7 @@ export default async function WatchMovie({ params }) {
       <h1 className="text-2xl font-bold mb-4">{movie.title}</h1>
       <div className="w-full max-w-4xl">
         <iframe
-          className="w-full h-[500px] border-none rounded-lg overflow-hidden"
+          className="w-full h-[500px] border-none rounded-lg overflow-hidden no-scrollbar"
           allowFullScreen
           src={embedUrl}
         ></iframe>
@@ -22,4 +22,5 @@ export default async function WatchMovie({ params }) {
     </div>
   );
 }
+
 
