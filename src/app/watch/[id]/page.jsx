@@ -6,13 +6,14 @@ export default async function WatchMovie({ params }) {
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
 
   const response = await fetch(
-    `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`,
+    `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&append_to_response=external_ids`,
     { next: { revalidate: 60 } }
   );
 
   const movie = await response.json();
 
-  const imdbId = movie.imdb_id;
+  const imdbId = movie.external_ids?.imdb_id;
+
   const embedUrl = `https://vidsrc.icu/embed/movie/${imdbId}`;
 
   return (
