@@ -20,7 +20,7 @@ export default async function WatchMovie({ params }) {
       <div className="w-full max-w-4xl">
         <iframe
           className="w-full h-[500px] border-none rounded-lg"
-    scrolling="no"
+          scrolling="no"
           allowFullScreen
           src={`https://vidsrc.icu/embed/movie/${imdbId}`}
         />
@@ -28,4 +28,5 @@ export default async function WatchMovie({ params }) {
     </div>
   );
 }
+
 
