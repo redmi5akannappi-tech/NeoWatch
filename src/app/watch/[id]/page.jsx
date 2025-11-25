@@ -1,10 +1,6 @@
-"use client";
-import axios from "axios";
-
 export default async function WatchMovie({ params }) {
   const { id } = params;
 
-  // MUST NOT be NEXT_PUBLIC_
   const API_KEY = process.env.TMDB_API_KEY;
 
   const response = await fetch(
