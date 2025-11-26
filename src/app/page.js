@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "../components/LoadingSpinner";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
@@ -83,7 +84,11 @@ export default function Home() {
           </div>
         ))}
       </div>
+
+      <Footer />
     </div>
+
+    
   );
 
   return (
