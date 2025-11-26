@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -88,29 +88,65 @@ export default function Home() {
   };
 
   // Horizontal Row Component
-  const Row = ({ title, data, type }) => (
-    <div className="mb-6">
-      <h2 className="text-xl font-bold mb-2">{title}</h2>
-      <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-hide">
-        {data.map((item) => (
-          <div
-            key={item.id}
-            className="min-w-[150px] cursor-pointer"
-            onClick={() => goToDetails(type, item.id)}
-          >
-            <img
-              src={`https://image.tmdb.org/t/p/w300${item.poster_path}`}
-              alt={item.title || item.name}
-              className="rounded-lg w-[150px] h-[225px] object-cover"
-            />
-            <p className="text-center mt-1 text-sm font-medium">
-              {item.title || item.name}
-            </p>
-          </div>
-        ))}
+    const Row = ({ title, data, type }) => {
+    const scrollRef = useRef(null);
+
+    const scrollLeft = () => {
+      scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
+    };
+
+    const scrollRight = () => {
+      scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+    };
+
+    return (
+      <div className="mb-6 relative">
+        <h2 className="text-xl font-bold mb-2">{title}</h2>
+
+        {/* Scrollable Row */}
+        <div
+          ref={scrollRef}
+          className="flex overflow-x-auto gap-4 pb-2 scrollbar-hide scroll-smooth"
+        >
+          {data.map((item) => (
+            <div
+              key={item.id}
+              className="min-w-[150px] cursor-pointer"
+              onClick={() => goToDetails(type, item.id)}
+            >
+              <img
+                src={`https://image.tmdb.org/t/p/w300${item.poster_path}`}
+                alt={item.title || item.name}
+                className="rounded-lg w-[150px] h-[225px] object-cover"
+              />
+              <p className="text-center mt-1 text-sm font-medium">
+                {item.title || item.name}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {/* LEFT BUTTON */}
+        <button
+          onClick={scrollLeft}
+          className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 
+          text-white p-3 rounded-full hidden md:flex"
+        >
+          ←
+        </button>
+
+        {/* RIGHT BUTTON */}
+        <button
+          onClick={scrollRight}
+          className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/80 
+          text-white p-3 rounded-full hidden md:flex"
+        >
+          →
+        </button>
       </div>
-    </div>
-  );
+    );
+  };
+
 
   return (
     <div className="p-4">
