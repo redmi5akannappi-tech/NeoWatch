@@ -49,20 +49,38 @@ export default function Home() {
   };
 
   // SEARCH
-  const searchMovies = async (e) => {
+    const searchMovies = async (e) => {
     e.preventDefault();
 
     if (!query.trim()) {
-      setSearchResults([]); // clear search
+      setSearchResults([]);
       return;
     }
 
-    const res = await axios.get(
+    // Search movies
+    const movieRes = await axios.get(
       `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
     );
 
-    setSearchResults(res.data.results);
+    // Search TV + Anime
+    const tvRes = await axios.get(
+      `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${query}`
+    );
+
+    const allTv = tvRes.data.results;
+
+    // Anime = TV shows with genre 16
+    const animeResults = allTv.filter((item) =>
+      item.genre_ids.includes(16)
+    );
+
+    setSearchResults({
+      movies: movieRes.data.results,
+      tv: allTv,
+      anime: animeResults,
+    });
   };
+
 
   const goToDetails = (type, id) => {
     setLoading(true);
@@ -116,13 +134,29 @@ export default function Home() {
       </form>
 
       {/* SEARCH RESULTS ROW */}
-      {searchResults.length > 0 && (
+      {/* SHOW SEARCH ROWS IF SEARCH RESULTS EXIST */}
+    {searchResults.movies && (
+      <>
         <Row
-          title={`🔍 Search Results for "${query}"`}
-          data={searchResults}
+          title={`🎬 Movie Results for "${query}"`}
+          data={searchResults.movies}
           type="movie"
         />
-      )}
+
+        <Row
+          title={`📺 TV Series Results for "${query}"`}
+          data={searchResults.tv}
+          type="tv"
+        />
+
+        <Row
+          title={`🎌 Anime Results for "${query}"`}
+          data={searchResults.anime}
+          type="anime"
+        />
+      </>
+    )}
+
 
       {/* Default Rows (Hidden during search) */}
       {searchResults.length === 0 && (
