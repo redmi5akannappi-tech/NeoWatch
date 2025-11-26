@@ -65,7 +65,7 @@ export default function Home() {
   const Row = ({ title, data, type }) => (
     <div className="mb-6">
       <h2 className="text-xl font-bold mb-2">{title}</h2>
-      <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-thin">
+      <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-thin " scrolling="no">
         {data.map((item) => (
           <div
             key={item.id}
