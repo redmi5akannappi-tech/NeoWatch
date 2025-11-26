@@ -22,12 +22,13 @@ export default async function WatchMovie({ params }) {
           className="w-full h-[500px] border-none rounded-lg"
           scrolling="no"
           allowFullScreen
-          src={`https://vidsrc.to/embed/movie/${id}`}
+          src={`https://vidsrc.icu/embed/movie/${imdbId}`}
         />
       </div>
     </div>
   );
 }
+
 
 
 
