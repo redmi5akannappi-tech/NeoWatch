@@ -16,6 +16,7 @@ export default function Home() {
   const [anime, setAnime] = useState([]);
 
   const [query, setQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     fetchPopularMovies();
@@ -47,15 +48,20 @@ export default function Home() {
     setAnime(res.data.results);
   };
 
-  // Search
+  // SEARCH
   const searchMovies = async (e) => {
     e.preventDefault();
-    if (!query.trim()) return fetchPopularMovies();
+
+    if (!query.trim()) {
+      setSearchResults([]); // clear search
+      return;
+    }
 
     const res = await axios.get(
       `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`
     );
-    setMovies(res.data.results);
+
+    setSearchResults(res.data.results);
   };
 
   const goToDetails = (type, id) => {
@@ -63,10 +69,11 @@ export default function Home() {
     router.push(`/${type}/${id}`);
   };
 
+  // Horizontal Row Component
   const Row = ({ title, data, type }) => (
     <div className="mb-6">
       <h2 className="text-xl font-bold mb-2">{title}</h2>
-      <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-hide " scrolling="no">
+      <div className="flex overflow-x-auto gap-4 pb-2 scrollbar-hide">
         {data.map((item) => (
           <div
             key={item.id}
@@ -84,11 +91,7 @@ export default function Home() {
           </div>
         ))}
       </div>
-
-      <Footer />
     </div>
-
-    
   );
 
   return (
@@ -107,14 +110,31 @@ export default function Home() {
           onChange={(e) => setQuery(e.target.value)}
           className="border p-2 rounded-l w-64"
         />
-        <button className="bg-blue-600 text-white px-4 rounded-r">Search</button>
+        <button className="bg-blue-600 text-white px-4 rounded-r">
+          Search
+        </button>
       </form>
 
-      {/* Rows */}
-      <Row title="🔥 Popular Movies" data={movies} type="movie" />
-      <Row title="📺 Popular TV Series" data={tvSeries} type="tv" />
-      <Row title="🎌 Anime" data={anime} type="tv" />
+      {/* SEARCH RESULTS ROW */}
+      {searchResults.length > 0 && (
+        <Row
+          title={`🔍 Search Results for "${query}"`}
+          data={searchResults}
+          type="movie"
+        />
+      )}
 
+      {/* Default Rows (Hidden during search) */}
+      {searchResults.length === 0 && (
+        <>
+          <Row title="🔥 Popular Movies" data={movies} type="movie" />
+          <Row title="📺 Popular TV Series" data={tvSeries} type="tv" />
+          <Row title="🎌 Anime" data={anime} type="tv" />
+        </>
+      )}
+
+      {/* Footer at the bottom ONLY once */}
+      <Footer />
     </div>
   );
 }
