@@ -9,7 +9,9 @@ export default function Home() {
   const API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY;
   const router = useRouter();
 
-  const [heroMovie, setHeroMovie] = useState(null);
+  const [heroList, setHeroList] = useState([]);
+  const [heroIndex, setHeroIndex] = useState(0);
+
   const [top10, setTop10] = useState([]);
   const [trending, setTrending] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
@@ -17,7 +19,7 @@ export default function Home() {
   const [anime, setAnime] = useState([]);
 
   useEffect(() => {
-    fetchHeroMovie();
+    fetchHeroList();
     fetchTop10();
     fetchTrending();
     fetchPopularMovies();
@@ -25,19 +27,26 @@ export default function Home() {
     fetchAnime();
   }, []);
 
-  // HERO MOVIE (Random upcoming or popular)
-  const fetchHeroMovie = async () => {
+  // 🎥 HERO MOVIE LIST (pull from trending)
+  const fetchHeroList = async () => {
     const res = await axios.get(
-      `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`
+      `https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`
     );
-
-    const randomMovie =
-      res.data.results[Math.floor(Math.random() * res.data.results.length)];
-
-    setHeroMovie(randomMovie);
+    setHeroList(res.data.results.slice(0, 8)); // first 8 movies for rotation
   };
 
-  // TOP 10
+  // 🔁 Auto-change hero banner
+  useEffect(() => {
+    if (heroList.length === 0) return;
+
+    const interval = setInterval(() => {
+      setHeroIndex((prev) => (prev + 1) % heroList.length);
+    }, 7000); // 7 seconds
+
+    return () => clearInterval(interval);
+  }, [heroList]);
+
+  // Fetch Top 10
   const fetchTop10 = async () => {
     const res = await axios.get(
       `https://api.themoviedb.org/3/trending/all/day?api_key=${API_KEY}`
@@ -45,7 +54,6 @@ export default function Home() {
     setTop10(res.data.results.slice(0, 10));
   };
 
-  // TRENDING
   const fetchTrending = async () => {
     const res = await axios.get(
       `https://api.themoviedb.org/3/trending/all/week?api_key=${API_KEY}`
@@ -53,7 +61,6 @@ export default function Home() {
     setTrending(res.data.results);
   };
 
-  // POPULAR MOVIES
   const fetchPopularMovies = async () => {
     const res = await axios.get(
       `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
@@ -61,7 +68,6 @@ export default function Home() {
     setPopularMovies(res.data.results);
   };
 
-  // POPULAR TV
   const fetchPopularTv = async () => {
     const res = await axios.get(
       `https://api.themoviedb.org/3/tv/popular?api_key=${API_KEY}`
@@ -69,7 +75,6 @@ export default function Home() {
     setPopularTv(res.data.results);
   };
 
-  // ANIME
   const fetchAnime = async () => {
     const res = await axios.get(
       `https://api.themoviedb.org/3/discover/tv?api_key=${API_KEY}&with_genres=16`
@@ -81,14 +86,22 @@ export default function Home() {
     router.push(`/${type}/${id}`);
   };
 
-  // Row Component
+  // 🎞️ ROW COMPONENT with left/right scroll buttons
   const Row = ({ title, data, type }) => {
     const scrollRef = useRef(null);
+
+    const scrollLeft = () => {
+      scrollRef.current.scrollBy({ left: -300, behavior: "smooth" });
+    };
+    const scrollRight = () => {
+      scrollRef.current.scrollBy({ left: 300, behavior: "smooth" });
+    };
 
     return (
       <div className="mb-10 relative">
         <h2 className="text-2xl font-bold mb-4">{title}</h2>
 
+        {/* Scrollable container */}
         <div
           ref={scrollRef}
           className="flex gap-6 overflow-x-auto pb-2 scrollbar-hide scroll-smooth"
@@ -96,10 +109,12 @@ export default function Home() {
           {data.map((item, index) => (
             <div
               key={item.id}
-              onClick={() => goToDetails(item.media_type || type, item.id)}
+              onClick={() =>
+                goToDetails(item.media_type || type, item.id)
+              }
               className="min-w-[180px] cursor-pointer relative"
             >
-              {/* Top 10 numbers (only for Top 10 row) */}
+              {/* Top 10 ranks only for top row */}
               {title.includes("Top 10") && (
                 <span className="absolute -left-8 top-1/2 -translate-y-1/2 text-7xl font-extrabold text-gray-300 opacity-40">
                   {index + 1}
@@ -116,19 +131,38 @@ export default function Home() {
             </div>
           ))}
         </div>
+
+        {/* LEFT SCROLL BUTTON */}
+        <button
+          onClick={scrollLeft}
+          className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-3 rounded-full hidden md:flex"
+        >
+          ←
+        </button>
+
+        {/* RIGHT SCROLL BUTTON */}
+        <button
+          onClick={scrollRight}
+          className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black text-white p-3 rounded-full hidden md:flex"
+        >
+          →
+        </button>
       </div>
     );
   };
 
+  // CURRENT HERO MOVIE
+  const heroMovie = heroList[heroIndex];
+
   return (
     <div className="min-h-screen bg-black text-white">
 
-      {/* NAVBAR / BRANDING */}
+      {/* BRANDING */}
       <header className="px-6 py-4 text-3xl font-extrabold tracking-wide">
         NeoWatch
       </header>
 
-      {/* HERO SECTION */}
+      {/* HERO BANNER */}
       {heroMovie && (
         <div
           className="relative w-full h-[70vh] rounded-xl overflow-hidden mb-12"
@@ -138,22 +172,10 @@ export default function Home() {
             backgroundPosition: "center",
           }}
         >
-          {/* Overlay */}
           <div className="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent flex flex-col justify-end p-10 max-w-xl">
-
-            <h1 className="text-5xl font-bold mb-4">{heroMovie.title}</h1>
-
-            <div className="flex gap-3 mb-4">
-              <span className="bg-white/10 px-3 py-1 rounded-full">
-                ⭐ {(heroMovie.vote_average || 0).toFixed(1)}
-              </span>
-              <span className="bg-white/10 px-3 py-1 rounded-full">
-                {heroMovie.release_date?.split("-")[0]}
-              </span>
-              <span className="bg-white/10 px-3 py-1 rounded-full">
-                Movie
-              </span>
-            </div>
+            <h1 className="text-5xl font-bold mb-4">
+              {heroMovie.title}
+            </h1>
 
             <p className="text-gray-300 text-lg mb-6 line-clamp-3">
               {heroMovie.overview}
@@ -178,19 +200,11 @@ export default function Home() {
         </div>
       )}
 
-      {/* TOP 10 TODAY */}
-      <Row title="TOP 10 CONTENT TODAY" data={top10} type="movie" />
-
-      {/* TRENDING */}
+      {/* ROWS */}
+      <Row title="TOP 10 TODAY" data={top10} type="movie" />
       <Row title="Trending Today" data={trending} type="movie" />
-
-      {/* POPULAR MOVIES */}
       <Row title="Popular Movies" data={popularMovies} type="movie" />
-
-      {/* POPULAR TV */}
-      <Row title="Popular TV Series" data={popularTv} type="tv" />
-
-      {/* ANIME */}
+      <Row title="Popular TV" data={popularTv} type="tv" />
       <Row title="Anime" data={anime} type="tv" />
 
       <Footer />
