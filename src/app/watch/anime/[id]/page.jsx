@@ -18,12 +18,7 @@ export default async function WatchAnime({ params }) {
       <h1 className="text-2xl font-bold mb-4">{anime.name}</h1>
 
       <div className="w-full max-w-4xl">
-        <iframe
-          className="w-full h-[500px] border-none rounded-lg"
-          scrolling="no"
-          allowFullScreen
-          src={`https://vidsrc.icu/embed/tv/${imdbId}`}
-        />
+        <iframe src={`https://www.vidking.net/embed/tv/${imdbId}/1/8?color=9146ff`} width="100%" height="600" frameborder="0" allowfullscreen> </iframe>
       </div>
     </div>
   );
