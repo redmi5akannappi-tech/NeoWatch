@@ -31,10 +31,11 @@ export default async function WatchSeries({ params }) {
       </div>
 
       {/* ⚠️ BRAVE BROWSER AD-FREE NOTICE */}
+      {/* ⚠️ BRAVE BROWSER AD-FREE NOTICE */}
       <div className="mt-6 w-full max-w-3xl bg-gradient-to-r from-orange-500 to-purple-600 text-white p-4 rounded-xl shadow-lg flex items-center gap-4 animate-pulse">
         <img
-          src="https://seeklogo.com/images/B/brave-browser-logo-31DD8A39D5-seeklogo.com.png"
-          alt="Brave"
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Brave_icon_red_and_white.svg/240px-Brave_icon_red_and_white.svg.png"
+          alt="Brave Browser Logo"
           className="w-12 h-12"
         />
         <p className="text-lg font-semibold">
@@ -42,6 +43,7 @@ export default async function WatchSeries({ params }) {
           we highly recommend using the <span className="font-bold">Brave Browser</span>!
         </p>
       </div>
+
     </div>
   );
 }
