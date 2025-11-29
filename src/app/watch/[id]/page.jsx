@@ -31,7 +31,7 @@ export default async function WatchMovie({ params }) {
       {/* ⚠️ BRAVE BROWSER AD-FREE NOTICE */}
       <div className="mt-6 w-full max-w-3xl bg-gradient-to-r from-orange-500 to-purple-600 text-white p-4 rounded-xl shadow-lg flex items-center gap-4 animate-pulse">
         <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Brave_icon_red_and_white.svg/240px-Brave_icon_red_and_white.svg.png"
+          src="https://brave.com/static-assets/images/brave-logo-sans-text.svg"
           alt="Brave Browser Logo"
           className="w-12 h-12"
         />
